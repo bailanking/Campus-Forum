@@ -54,13 +54,16 @@ import router from "@/router";
 import {reactive, ref} from "vue";
 import {login} from '@/net'
 
+// 表单引用用于触发 Element Plus 的校验。
 const formRef = ref()
+// 登录表单模型。
 const form = reactive({
   username: '',
   password: '',
   remember: false
 })
 
+// 登录表单校验规则。
 const rules = {
   username: [
     { required: true, message: '请输入用户名' }
@@ -70,6 +73,7 @@ const rules = {
   ]
 }
 
+// 提交登录：先校验，再调用后端登录接口，成功后跳转首页。
 function userLogin() {
   formRef.value.validate((isValid) => {
     if(isValid) {

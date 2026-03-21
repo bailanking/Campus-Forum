@@ -84,8 +84,10 @@ import {get, post} from "@/net";
 import {ElMessage} from "element-plus";
 import router from "@/router";
 
+// 步骤条状态：0=验证邮箱，1=设置新密码。
 const active = ref(0)
 
+// 找回密码表单模型。
 const form = reactive({
     email: '',
     code: '',
@@ -93,6 +95,7 @@ const form = reactive({
     password_repeat: '',
 })
 
+// 二次密码一致性校验。
 const validatePassword = (rule, value, callback) => {
     if (value === '') {
         callback(new Error('请再次输入密码'))
@@ -103,6 +106,7 @@ const validatePassword = (rule, value, callback) => {
     }
 }
 
+// 表单校验规则。
 const rules = {
     email: [
         { required: true, message: '请输入邮件地址', trigger: 'blur' },
@@ -120,15 +124,18 @@ const rules = {
     ],
 }
 
+// 表单引用与验证码发送状态。
 const formRef = ref()
 const isEmailValid = ref(false)
 const coldTime = ref(0)
 
+// 监听邮箱字段校验结果，用于控制验证码按钮状态。
 const onValidate = (prop, isValid) => {
     if(prop === 'email')
         isEmailValid.value = isValid
 }
 
+// 发送重置验证码，并启动冷却倒计时。
 const validateEmail = () => {
     coldTime.value = 60
     get(`/api/auth/ask-code?email=${form.email}&type=reset`, () => {
@@ -145,6 +152,7 @@ const validateEmail = () => {
     })
 }
 
+// 校验邮箱与验证码，成功后进入下一步。
 const confirmReset = () => {
     formRef.value.validate((isValid) => {
         if(isValid) {
@@ -156,6 +164,7 @@ const confirmReset = () => {
     })
 }
 
+// 提交新密码，成功后返回登录页。
 const doReset = () => {
     formRef.value.validate((isValid) => {
         if(isValid) {

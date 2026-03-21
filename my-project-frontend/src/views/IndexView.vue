@@ -8,6 +8,7 @@
 import { logout } from '@/net'
 import router from "@/router";
 
+// 退出登录后回到欢迎页。
 function userLogout() {
   logout(() => router.push("/"))
 }

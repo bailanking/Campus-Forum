@@ -9,8 +9,20 @@ import java.util.Date;
  */
 @Data
 public class AuthorizeVO {
+    /**
+     * 用户名。
+     */
     String username;
+    /**
+     * 当前角色。
+     */
     String role;
+    /**
+     * 登录成功后返回的 JWT。
+     */
     String token;
+    /**
+     * JWT 过期时间。
+     */
     Date expire;
 }

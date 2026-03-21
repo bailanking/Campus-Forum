@@ -16,11 +16,29 @@ import java.util.Date;
 @TableName("db_account")
 @AllArgsConstructor
 public class Account implements BaseData {
+    /**
+     * 主键 ID。
+     */
     @TableId(type = IdType.AUTO)
     Integer id;
+    /**
+     * 登录用户名。
+     */
     String username;
+    /**
+     * 已加密的登录密码。
+     */
     String password;
+    /**
+     * 唯一邮箱地址。
+     */
     String email;
+    /**
+     * 角色标识（不含 ROLE_ 前缀）。
+     */
     String role;
+    /**
+     * 注册时间。
+     */
     Date registerTime;
 }

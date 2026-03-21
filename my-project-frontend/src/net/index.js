@@ -2,14 +2,17 @@ import axios from "axios";
 import {ElMessage} from "element-plus";
 import router from "@/router";
 
+// 本地存储中的授权对象键名。
 const authItemName = "authorize"
 
+// 按约定拼接 Authorization 请求头。
 const accessHeader = () => {
     return {
         'Authorization': `Bearer ${takeAccessToken()}`
     }
 }
 
+// 默认的网络异常处理（如 5xx、网络中断、超时等）。
 const defaultError = (error) => {
     console.error(error)
     const status = error.response.status
@@ -20,11 +23,13 @@ const defaultError = (error) => {
     }
 }
 
+// 默认的业务失败处理（后端返回 code 非 200）。
 const defaultFailure = (message, status, url) => {
     console.warn(`请求地址: ${url}, 状态码: ${status}, 错误信息: ${message}`)
     ElMessage.warning(message)
 }
 
+// 读取并校验 JWT，过期时自动清理并提示重新登录。
 function takeAccessToken() {
     const str = localStorage.getItem(authItemName) || sessionStorage.getItem(authItemName);
     if(!str) return null
@@ -37,6 +42,7 @@ function takeAccessToken() {
     return authObj.token
 }
 
+// 持久化登录态，remember=true 写入 localStorage，否则写入 sessionStorage。
 function storeAccessToken(remember, token, expire){
     const authObj = {
         token: token,
@@ -49,6 +55,7 @@ function storeAccessToken(remember, token, expire){
         sessionStorage.setItem(authItemName, str)
 }
 
+// 清理登录态，可选是否跳转回登录页。
 function deleteAccessToken(redirect = false) {
     localStorage.removeItem(authItemName)
     sessionStorage.removeItem(authItemName)
@@ -57,6 +64,7 @@ function deleteAccessToken(redirect = false) {
     }
 }
 
+// POST 请求统一封装：处理成功、鉴权过期和业务失败分支。
 function internalPost(url, data, headers, success, failure, error = defaultError){
     axios.post(url, data, { headers: headers }).then(({data}) => {
         if(data.code === 200) {
@@ -70,6 +78,7 @@ function internalPost(url, data, headers, success, failure, error = defaultError
     }).catch(err => error(err))
 }
 
+// GET 请求统一封装：处理成功、鉴权过期和业务失败分支。
 function internalGet(url, headers, success, failure, error = defaultError){
     axios.get(url, { headers: headers }).then(({data}) => {
         if(data.code === 200) {
@@ -83,6 +92,7 @@ function internalGet(url, headers, success, failure, error = defaultError){
     }).catch(err => error(err))
 }
 
+// 登录接口：成功后保存 token，并通过 success 回调继续后续流程。
 function login(username, password, remember, success, failure = defaultFailure){
     internalPost('/api/auth/login', {
         username: username,
@@ -96,10 +106,12 @@ function login(username, password, remember, success, failure = defaultFailure){
     }, failure)
 }
 
+// 业务 POST 快捷方法，自动携带 token 头。
 function post(url, data, success, failure = defaultFailure) {
     internalPost(url, data, accessHeader() , success, failure)
 }
 
+// 登出接口：调用服务端注销并清理本地登录态。
 function logout(success, failure = defaultFailure){
     get('/api/auth/logout', () => {
         deleteAccessToken()
@@ -108,10 +120,12 @@ function logout(success, failure = defaultFailure){
     }, failure)
 }
 
+// 业务 GET 快捷方法，自动携带 token 头。
 function get(url, success, failure = defaultFailure) {
     internalGet(url, accessHeader(), success, failure)
 }
 
+// 是否处于未登录状态。
 function unauthorized() {
     return !takeAccessToken()
 }
