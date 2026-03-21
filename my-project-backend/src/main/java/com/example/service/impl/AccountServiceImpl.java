@@ -143,6 +143,10 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         return null;
     }
 
+    @Override
+    public Account findAccountById(int id) {
+        return this.query().eq("id", id).one();
+    }
     /**
      * 移除Redis中存储的邮件验证码
      * @param email 电邮

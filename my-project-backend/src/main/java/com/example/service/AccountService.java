@@ -31,4 +31,6 @@ public interface AccountService extends IService<Account>, UserDetailsService {
      * 校验重置密码验证码是否正确。
      */
     String resetConfirm(ConfirmResetVO info);
+
+    Account findAccountById(int id);
 }
