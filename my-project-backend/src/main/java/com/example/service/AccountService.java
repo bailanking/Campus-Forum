@@ -5,6 +5,7 @@ import com.example.entity.dto.Account;
 import com.example.entity.vo.request.ConfirmResetVO;
 import com.example.entity.vo.request.EmailRegisterVO;
 import com.example.entity.vo.request.EmailResetVO;
+import com.example.entity.vo.request.ModifyEmailVO;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
@@ -33,4 +34,6 @@ public interface AccountService extends IService<Account>, UserDetailsService {
     String resetConfirm(ConfirmResetVO info);
 
     Account findAccountById(int id);
+
+    String modifyEmail(int id, ModifyEmailVO vo);
 }
