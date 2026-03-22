@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  */
 @Slf4j
 @RestControllerAdvice
+/**
+ * 参数校验异常统一处理器。
+ */
 public class ValidationController {
 
     /**
@@ -20,6 +23,7 @@ public class ValidationController {
      */
     @ExceptionHandler(ValidationException.class)
     public RestBean<Void> validateError(ValidationException exception) {
+        // 保留告警日志，向前端返回统一格式的参数错误信息。
         log.warn("Resolved [{}: {}]", exception.getClass().getName(), exception.getMessage());
         return RestBean.failure(400, "请求参数有误");
     }

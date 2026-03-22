@@ -33,6 +33,9 @@ import java.util.Map;
 @SecurityScheme(type = SecuritySchemeType.HTTP, scheme = "Bearer",
         name = "Authorization", in = SecuritySchemeIn.HEADER)
 @OpenAPIDefinition(security = { @SecurityRequirement(name = "Authorization") })
+/**
+ * Swagger/OpenAPI 文档配置。
+ */
 public class SwaggerConfiguration {
 
     /**
@@ -41,6 +44,7 @@ public class SwaggerConfiguration {
      */
     @Bean
     public OpenAPI springShopOpenAPI() {
+        // 定义文档元信息（标题、描述、版本、外链）。
         return new OpenAPI()
                 .info(new Info().title("示例项目 API 文档")
                         .description("欢迎来到本示例项目API测试文档，在这里可以快速进行接口调试")
@@ -62,6 +66,7 @@ public class SwaggerConfiguration {
      */
     @Bean
     public OpenApiCustomizer customerGlobalHeaderOpenApiCustomizer() {
+        // 手动补充登录/登出接口到文档中。
         return api -> this.authorizePathItems().forEach(api.getPaths()::addPathItem);
     }
 

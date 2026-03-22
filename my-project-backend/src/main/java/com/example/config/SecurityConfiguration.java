@@ -31,15 +31,27 @@ import java.io.PrintWriter;
 @Configuration
 public class SecurityConfiguration {
 
+    /**
+     * JWT 认证过滤器。
+     */
     @Resource
     JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    /**
+     * 请求日志过滤器。
+     */
     @Resource
     RequestLogFilter requestLogFilter;
 
+    /**
+     * JWT 工具类。
+     */
     @Resource
     JwtUtils utils;
 
+    /**
+     * 账号服务，用于登录成功后查询用户信息。
+     */
     @Resource
     AccountService service;
 
@@ -53,8 +65,10 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(conf -> conf
+                        // 认证接口、错误页与文档接口放行。
                         .requestMatchers("/api/auth/**", "/error").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        // 其余接口要求默认用户角色。
                         .anyRequest().hasAnyRole(Const.ROLE_DEFAULT)
                 )
                 .formLogin(conf -> conf

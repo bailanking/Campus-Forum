@@ -26,6 +26,9 @@ import java.util.function.Supplier;
 @Tag(name = "登录校验相关", description = "包括用户登录、注册、验证码请求等操作。")
 public class AuthorizeController {
 
+    /**
+     * 账号服务，处理验证码、注册、找回密码等业务。
+     */
     @Resource
     AccountService accountService;
 

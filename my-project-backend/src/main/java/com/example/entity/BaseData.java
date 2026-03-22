@@ -11,6 +11,9 @@ import java.util.function.Consumer;
 /**
  * 用于DTO快速转换VO实现，只需将DTO类继承此类即可使用
  */
+/**
+ * DTO 到 VO 的反射映射能力接口。
+ */
 public interface BaseData {
     /**
      * 创建指定的VO类并将当前DTO对象中的所有成员变量值直接复制到VO对象中
@@ -36,6 +39,7 @@ public interface BaseData {
             Field[] fields = clazz.getDeclaredFields();
             Constructor<V> constructor = clazz.getConstructor();
             V v = constructor.newInstance();
+            // 依据字段同名规则进行浅拷贝。
             Arrays.asList(fields).forEach(field -> convert(field, v));
             return v;
         } catch (ReflectiveOperationException exception) {

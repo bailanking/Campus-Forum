@@ -39,9 +39,15 @@ public class JwtUtils {
     @Value("${spring.security.jwt.limit.frequency}")
     private int limit_frequency;
 
+    /**
+     * Redis 模板，用于黑名单与频率限制计数。
+     */
     @Resource
     StringRedisTemplate template;
 
+    /**
+     * 限流工具，控制 JWT 生成频率。
+     */
     @Resource
     FlowUtils utils;
 
@@ -81,6 +87,7 @@ public class JwtUtils {
         if(this.frequencyCheck(userId)) {
             Algorithm algorithm = Algorithm.HMAC256(key);
             Date expire = this.expireTime();
+            // 将用户主键、用户名、权限写入 JWT 声明，供后续鉴权解析。
             return JWT.create()
                     .withJWTId(UUID.randomUUID().toString())
                     .withClaim("id", userId)
@@ -108,6 +115,7 @@ public class JwtUtils {
         JWTVerifier jwtVerifier = JWT.require(algorithm).build();
         try {
             DecodedJWT verify = jwtVerifier.verify(token);
+            // 已失效（黑名单）或已过期令牌均视为无效。
             if(this.isInvalidToken(verify.getId())) return null;
             Map<String, Claim> claims = verify.getClaims();
             return new Date().after(claims.get("exp").asDate()) ? null : verify;

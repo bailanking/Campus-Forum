@@ -16,6 +16,9 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class FlowUtils {
 
+    /**
+     * Redis 模板，用于限流计数与封禁键管理。
+     */
     @Resource
     StringRedisTemplate template;
 
@@ -76,6 +79,7 @@ public class FlowUtils {
         if (count != null) {
             long value = Optional.ofNullable(template.opsForValue().increment(key)).orElse(0L);
             int c = Integer.parseInt(count);
+            // 兼容键过期时间异常丢失的场景，重新设置 TTL。
             if(value != c + 1)
                 template.expire(key, period, TimeUnit.SECONDS);
             return action.run(value > frequency);

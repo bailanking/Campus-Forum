@@ -15,6 +15,9 @@ import java.util.Date;
 @Data
 @TableName("db_account")
 @AllArgsConstructor
+/**
+ * 账号基础信息实体。
+ */
 public class Account implements BaseData {
     /**
      * 主键 ID。

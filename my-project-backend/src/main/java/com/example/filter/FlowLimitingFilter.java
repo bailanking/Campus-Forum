@@ -27,6 +27,9 @@ import java.io.PrintWriter;
 @Order(Const.ORDER_FLOW_LIMIT)
 public class FlowLimitingFilter extends HttpFilter {
 
+    /**
+     * Redis 模板，用于记录访问计数和封禁键。
+     */
     @Resource
     StringRedisTemplate template;
     //指定时间内最大请求次数限制
@@ -39,9 +42,15 @@ public class FlowLimitingFilter extends HttpFilter {
     @Value("${spring.web.flow.block}")
     int block;
 
+    /**
+     * 限流策略工具。
+     */
     @Resource
     FlowUtils utils;
 
+    /**
+     * 对请求做频率控制，命中限制时直接返回 429。
+     */
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String address = request.getRemoteAddr();
@@ -58,6 +67,7 @@ public class FlowLimitingFilter extends HttpFilter {
      */
     private boolean tryCount(String address) {
         synchronized (address.intern()) {
+            // 若已被封禁，直接拒绝本次请求。
             if(Boolean.TRUE.equals(template.hasKey(Const.FLOW_LIMIT_BLOCK + address)))
                 return false;
             String counterKey = Const.FLOW_LIMIT_COUNTER + address;

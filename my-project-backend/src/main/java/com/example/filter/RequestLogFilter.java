@@ -26,11 +26,20 @@ import java.util.Set;
 @Component
 public class RequestLogFilter extends OncePerRequestFilter {
 
+    /**
+     * 请求 ID 生成器，用于串联同一次请求的日志。
+     */
     @Resource
     SnowflakeIdGenerator generator;
 
+    /**
+     * 需要忽略日志记录的接口路径前缀。
+     */
     private final Set<String> ignores = Set.of("/swagger-ui", "/v3/api-docs");
 
+    /**
+     * 在请求开始和结束处记录日志，并统计处理耗时。
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if(this.isIgnoreUrl(request.getServletPath())) {

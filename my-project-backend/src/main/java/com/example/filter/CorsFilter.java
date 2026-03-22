@@ -19,15 +19,27 @@ import java.io.IOException;
 @Order(Const.ORDER_CORS)
 public class CorsFilter extends HttpFilter {
 
+    /**
+     * 允许的来源站点配置。
+     */
     @Value("${spring.web.cors.origin}")
     String origin;
 
+    /**
+     * 是否允许携带 Cookie。
+     */
     @Value("${spring.web.cors.credentials}")
     boolean credentials;
 
+    /**
+     * 允许的请求方法配置。
+     */
     @Value("${spring.web.cors.methods}")
     String methods;
 
+    /**
+     * 在过滤链最前侧补充 CORS 响应头。
+     */
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         this.addCorsHeader(request, response);

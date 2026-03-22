@@ -15,11 +15,20 @@ import java.util.Map;
  */
 @Component
 @RabbitListener(queues = "mail")
+/**
+ * 邮件队列消费者，负责组装并发送验证码邮件。
+ */
 public class MailQueueListener {
 
+    /**
+     * Spring 邮件发送器。
+     */
     @Resource
     JavaMailSender sender;
 
+    /**
+     * 发件人邮箱地址。
+     */
     @Value("${spring.mail.username}")
     String username;
 
@@ -31,6 +40,7 @@ public class MailQueueListener {
     public void sendMailMessage(Map<String, Object> data) {
         String email = data.get("email").toString();
         Integer code = (Integer) data.get("code");
+        // 根据业务类型选择对应模板内容。
         SimpleMailMessage message = switch (data.get("type").toString()) {
             case "register" ->
                     createMessage("欢迎注册我们的网站",

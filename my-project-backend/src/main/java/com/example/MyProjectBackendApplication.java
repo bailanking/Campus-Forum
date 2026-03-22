@@ -5,12 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 /**
- * åç«¯æœåŠ¡å¯åŠ¨å…¥å£ã€‚
+ * ºó¶Ë·şÎñÆô¶¯Èë¿Ú¡£
  */
 public class MyProjectBackendApplication {
 
     /**
-     * Spring Boot ä¸»å‡½æ•°ï¼Œè´Ÿè´£å¼•å¯¼æ•´ä¸ªåº”ç”¨ä¸Šä¸‹æ–‡ã€‚
+     * Æô¶¯ Spring Boot Ó¦ÓÃÉÏÏÂÎÄ¡£
      */
     public static void main(String[] args) {
         SpringApplication.run(MyProjectBackendApplication.class, args);

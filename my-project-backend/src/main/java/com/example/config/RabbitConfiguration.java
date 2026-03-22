@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class RabbitConfiguration {
+    /**
+     * 邮件发送任务队列定义。
+     */
     @Bean("mailQueue")
     public Queue queue(){
         return QueueBuilder

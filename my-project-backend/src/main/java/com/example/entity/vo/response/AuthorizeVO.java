@@ -8,6 +8,9 @@ import java.util.Date;
  * 登录验证成功的用户信息响应
  */
 @Data
+/**
+ * 登录成功后的认证响应体。
+ */
 public class AuthorizeVO {
     /**
      * 用户名。

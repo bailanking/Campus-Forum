@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
  * 雪花算法ID生成器
  */
 @Component
+/**
+ * 雪花算法 ID 生成器，生成全局递增且分布式可用的 long 型主键。
+ */
 public class SnowflakeIdGenerator {
     private static final long START_TIMESTAMP = 1691087910202L;
 
@@ -31,6 +34,7 @@ public class SnowflakeIdGenerator {
     }
 
     private SnowflakeIdGenerator(long dataCenterId, long workerId) {
+        // 初始化时校验数据中心和工作节点编号是否合法。
         if (dataCenterId > MAX_DATA_CENTER_ID || dataCenterId < 0) {
             throw new IllegalArgumentException("Data center ID can't be greater than " + MAX_DATA_CENTER_ID + " or less than 0");
         }
@@ -47,6 +51,7 @@ public class SnowflakeIdGenerator {
      */
     public synchronized long nextId() {
         long timestamp = getCurrentTimestamp();
+        // 系统时钟回拨会导致 ID 冲突，这里直接拒绝生成。
         if (timestamp < lastTimestamp) {
             throw new IllegalStateException("Clock moved backwards. Refusing to generate ID.");
         }

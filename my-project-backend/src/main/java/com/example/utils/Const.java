@@ -3,6 +3,9 @@ package com.example.utils;
 /**
  * 一些常量字符串整合
  */
+/**
+ * 系统常量定义，集中维护 Redis 键前缀、过滤器顺序和角色标识。
+ */
 public final class Const {
     //JWT令牌
     public final static String JWT_BLACK_LIST = "jwt:blacklist:";

@@ -34,15 +34,27 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
     @Value("${spring.web.verify.mail-limit}")
     int verifyLimit;
 
+    /**
+     * RabbitMQ 模板，用于异步发送邮件任务。
+     */
     @Resource
     AmqpTemplate rabbitTemplate;
 
+    /**
+     * Redis 模板，用于验证码和限流键读写。
+     */
     @Resource
     StringRedisTemplate stringRedisTemplate;
 
+    /**
+     * 密码加密器。
+     */
     @Resource
     PasswordEncoder passwordEncoder;
 
+    /**
+     * 限流工具。
+     */
     @Resource
     FlowUtils flow;
 
@@ -75,6 +87,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         synchronized (address.intern()) {
             if(!this.verifyLimit(address))
                 return "请求频繁，请稍后再试";
+            // 生成 6 位验证码并投递邮件发送任务。
             Random random = new Random();
             int code = random.nextInt(899999) + 100000;
             Map<String, Object> data = Map.of("type",type,"email", email, "code", code);
@@ -154,6 +167,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
         if(!code.equals(vo.getCode())) return "验证码错误，请重新输入";
         this.deleteEmailVerifyCode(email);
         Account account = this.findAccountByNameOrEmail(email);
+        // 邮箱只能绑定到一个账号。
         if(account != null && account.getId() != id){
             return "该电子邮件已经被其他账号绑定，无法完成此操作";
         }
@@ -167,6 +181,7 @@ public class AccountServiceImpl extends ServiceImpl<AccountMapper, Account> impl
     @Override
     public String changePassword(int id, ChangePasswordVO vo) {
         String password = this.query().eq("id", id).one().getPassword();
+        // 仅在原密码校验通过后执行更新。
         if(!passwordEncoder.matches(vo.getPassword(), password)){
             return "原密码错误，请重新输入！";
         }

@@ -17,8 +17,14 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping({"${server.error.path:${error.path:/error}}"})
+/**
+ * 全局错误页控制器，将框架异常转换为统一响应体。
+ */
 public class ErrorPageController extends AbstractErrorController {
 
+    /**
+     * 注入 Spring 错误属性提供器。
+     */
     public ErrorPageController(ErrorAttributes errorAttributes) {
         super(errorAttributes);
     }
@@ -32,6 +38,7 @@ public class ErrorPageController extends AbstractErrorController {
     public RestBean<Void> error(HttpServletRequest request) {
         HttpStatus status = this.getStatus(request);
         Map<String, Object> errorAttributes = this.getErrorAttributes(request, this.getAttributeOptions());
+        // 先尝试使用自定义文案，未命中则回退到框架原始错误信息。
         String message = this.convertErrorMessage(status)
                 .orElse(errorAttributes.get("message").toString());
         return RestBean.failure(status.value(), message);
