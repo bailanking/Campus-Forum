@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.entity.RestBean;
 import com.example.entity.dto.Account;
 import com.example.entity.dto.AccountDetails;
+import com.example.entity.vo.request.ChangePasswordVO;
 import com.example.entity.vo.request.DetailsSaveVO;
 import com.example.entity.vo.request.ModifyEmailVO;
 import com.example.entity.vo.response.AccountDetailsVO;
@@ -52,5 +53,12 @@ public class AccountController {
                                       @RequestBody @Validated ModifyEmailVO vo){
         String result = accountService.modifyEmail(id, vo);
         return result == null ? RestBean.success() : RestBean.failure(400, result);
+    }
+
+    @PostMapping("/change-password")
+    public RestBean<Void> changePassword(@RequestAttribute(Const.ATTR_USER_ID) int id,
+                                        @RequestBody @Validated ChangePasswordVO vo){
+            String result = accountService.changePassword(id, vo);
+            return result == null ? RestBean.success() : RestBean.failure(400, result);
     }
 }
